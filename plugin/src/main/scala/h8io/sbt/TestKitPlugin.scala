@@ -28,8 +28,8 @@ object TestKitPlugin extends AutoPlugin {
       TestKit / packageBin / artifact := (Compile / packageBin / artifact).value.withClassifier(Some(testkit)),
       TestKit / packageSrc / artifact :=
         (Compile / packageSrc / artifact).value.withClassifier(Some(testkit + "-sources")),
-      TestKit / packageDoc / artifact := (Compile / packageDoc / artifact).value.withClassifier(
-        Some(artifactClassifier + "-javadoc")),
+      TestKit / packageDoc / artifact :=
+        (Compile / packageDoc / artifact).value.withClassifier(Some(testkit + "-javadoc")),
       TestKit / artifacts ++= {
         if ((TestKit / enabled).value)
           Seq(
