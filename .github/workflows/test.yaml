@@ -1,0 +1,16 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    secrets: inherit
+    uses: h8io/gha/.github/workflows/test.yaml@v3
+    with:
+      java-version: 8
