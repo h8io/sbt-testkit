@@ -31,7 +31,7 @@ ThisBuild / scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) m
     )
   case _ => Nil
 })
-ThisBuild / javacOptions ++= Seq("-target", "8")
+ThisBuild / javacOptions ++= Seq("-source", "8", "-target", "8")
 
 ThisBuild / developers := List(
   Developer(
@@ -48,8 +48,6 @@ ThisBuild / scmInfo := Some(
     "scm:git@github.com:h8io/sbt-testkit.git"
   )
 )
-
-ThisBuild / dynverSonatypeSnapshots := true
 
 val plugin = project
   .enablePlugins(SbtPlugin, ScoverageSummaryPlugin)
