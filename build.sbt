@@ -11,6 +11,7 @@ ThisBuild / dynverSonatypeSnapshots := true
 ThisBuild / dynverSeparator := "-"
 
 ThisBuild / scalaVersion := "2.12.21"
+
 ThisBuild / crossScalaVersions := Seq(scalaVersion.value, "3.8.4")
 ThisBuild / javacOptions ++= Seq("--release", "11")
 
