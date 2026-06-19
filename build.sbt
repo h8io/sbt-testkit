@@ -1,40 +1,34 @@
-ThisBuild / organization := "io.h8.sbt"
-ThisBuild / organizationName := "H8IO"
-ThisBuild / organizationHomepage := Some(url("https://github.com/h8io/"))
-
-ThisBuild / description := "SBT testkit configuration plugin"
-ThisBuild / licenses := List("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
-ThisBuild / homepage := Some(url("https://github.com/h8io/sbt-testkit"))
-ThisBuild / versionScheme := Some("semver-spec")
-
 ThisBuild / dynverSonatypeSnapshots := true
 ThisBuild / dynverSeparator := "-"
-
-ThisBuild / scalaVersion := "2.12.21"
-
-ThisBuild / crossScalaVersions := Seq(scalaVersion.value, "3.8.4")
-ThisBuild / javacOptions ++= Seq("--release", "11")
-
-ThisBuild / developers := List(
-  Developer(
-    id = "eshu",
-    name = "Pavel",
-    email = "tjano.xibalba@gmail.com",
-    url = url("https://github.com/h8io/")
-  )
-)
-
-ThisBuild / scmInfo := Some(
-  ScmInfo(
-    url("https://github.com/h8io/sbt-testkit"),
-    "scm:git@github.com:h8io/sbt-testkit.git"
-  )
-)
 
 val plugin = project
   .enablePlugins(SbtPlugin, ScoverageSummaryPlugin)
   .settings(
     name := "sbt-testkit",
+    organization := "io.h8.sbt",
+    organizationName := "H8IO",
+    organizationHomepage := Some(url("https://github.com/h8io/")),
+    description := "SBT testkit configuration plugin",
+    licenses := List("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+    homepage := Some(url("https://github.com/h8io/sbt-testkit")),
+    versionScheme := Some("semver-spec"),
+    scalaVersion := "2.12.21",
+    crossScalaVersions := Seq(scalaVersion.value, "3.8.4"),
+    javacOptions ++= Seq("--release", "11"),
+    developers := List(
+      Developer(
+        id = "eshu",
+        name = "Pavel",
+        email = "tjano.xibalba@gmail.com",
+        url = url("https://github.com/h8io/")
+      )
+    ),
+    scmInfo := Some(
+      ScmInfo(
+        url("https://github.com/h8io/sbt-testkit"),
+        "scm:git@github.com:h8io/sbt-testkit.git"
+      )
+    ),
     sbtPlugin := true,
     sbtPluginPublishLegacyMavenStyle := false,
     pluginCrossBuild / sbtVersion := {
@@ -44,8 +38,8 @@ val plugin = project
       }
     },
     scalacOptions ++=
-      (CrossVersion.partialVersion(scalaVersion.value) match {
-        case Some((2, 12)) =>
+      (scalaBinaryVersion.value match {
+        case "2.12" =>
           Seq(
             "-Xsource:3",
             "-language:higherKinds",
@@ -59,6 +53,9 @@ val plugin = project
             "-Ywarn-unused",
             "-Ywarn-dead-code",
             "-Ywarn-unused:-nowarn",
+            "-Ywarn-value-discard",
+            "-Ywarn-numeric-widen",
+            "-Ywarn-extra-implicit",
             "-Ypartial-unification"
           )
         case _ =>
@@ -69,7 +66,9 @@ val plugin = project
             "-Werror",
             "-Wshadow:all",
             "-Wunused:all",
-            "-Wvalue-discard"
+            "-Wvalue-discard",
+            "-Wsafe-init",
+            "-source:future"
           )
       })
   )
