@@ -43,32 +43,33 @@ val plugin = project
         case _ => "2.0.0"
       }
     },
-    scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, 12)) =>
-        Seq(
-          "-Xsource:3",
-          "-language:higherKinds",
-          "--deprecation",
-          "--feature",
-          "--unchecked",
-          "-Xlint:_",
-          "-Xfatal-warnings",
-          "-opt:l:inline",
-          "-opt-warnings",
-          "-Ywarn-unused",
-          "-Ywarn-dead-code",
-          "-Ywarn-unused:-nowarn",
-          "-Ypartial-unification"
-        )
-      case _ =>
-        Seq(
-          "-deprecation",
-          "-feature",
-          "-unchecked",
-          "-Werror",
-          "-Wshadow:all",
-          "-Wunused:all",
-          "-Wvalue-discard"
-        )
-    })
+    scalacOptions ++=
+      (CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 12)) =>
+          Seq(
+            "-Xsource:3",
+            "-language:higherKinds",
+            "--deprecation",
+            "--feature",
+            "--unchecked",
+            "-Xlint:_",
+            "-Xfatal-warnings",
+            "-opt:l:inline",
+            "-opt-warnings",
+            "-Ywarn-unused",
+            "-Ywarn-dead-code",
+            "-Ywarn-unused:-nowarn",
+            "-Ypartial-unification"
+          )
+        case _ =>
+          Seq(
+            "-deprecation",
+            "-feature",
+            "-unchecked",
+            "-Werror",
+            "-Wshadow:all",
+            "-Wunused:all",
+            "-Wvalue-discard"
+          )
+      })
   )
