@@ -11,28 +11,9 @@ ThisBuild / dynverSonatypeSnapshots := true
 ThisBuild / dynverSeparator := "-"
 
 ThisBuild / scalaVersion := "2.12.21"
-// ThisBuild / crossScalaVersions += "3.8.3"
-ThisBuild / scalacOptions ++=
-  (CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, 12)) =>
-      Seq(
-        "-Xsource:3",
-        "-language:higherKinds",
-        "--deprecation",
-        "--feature",
-        "--unchecked",
-        "-Xlint:_",
-        "-Xfatal-warnings",
-        "-opt:l:inline",
-        "-opt-warnings",
-        "-Ywarn-unused",
-        "-Ywarn-dead-code",
-        "-Ywarn-unused:-nowarn",
-        "-Ypartial-unification"
-      )
-    case _ => Nil
-  })
-ThisBuild / javacOptions ++= Seq("-source", "8", "-target", "8")
+
+ThisBuild / crossScalaVersions := Seq(scalaVersion.value, "3.8.4")
+ThisBuild / javacOptions ++= Seq("--release", "11")
 
 ThisBuild / developers := List(
   Developer(
@@ -62,5 +43,33 @@ val plugin = project
         case _ => "2.0.0"
       }
     },
-    libraryDependencies ++= Seq("org.scala-sbt" % "sbt" % (pluginCrossBuild / sbtVersion).value)
+    scalacOptions ++=
+      (CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, 12)) =>
+          Seq(
+            "-Xsource:3",
+            "-language:higherKinds",
+            "--deprecation",
+            "--feature",
+            "--unchecked",
+            "-Xlint:_",
+            "-Xfatal-warnings",
+            "-opt:l:inline",
+            "-opt-warnings",
+            "-Ywarn-unused",
+            "-Ywarn-dead-code",
+            "-Ywarn-unused:-nowarn",
+            "-Ypartial-unification"
+          )
+        case _ =>
+          Seq(
+            "-deprecation",
+            "-feature",
+            "-unchecked",
+            "-Werror",
+            "-Wshadow:all",
+            "-Wunused:all",
+            "-Wvalue-discard"
+          )
+      })
   )

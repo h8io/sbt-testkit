@@ -22,8 +22,8 @@ object TestKitPlugin extends AutoPlugin {
       addArtifact(TestKit / packageBin / artifact, TestKit / packageBin) ++
       addArtifact(TestKit / packageSrc / artifact, TestKit / packageSrc) ++
       addArtifact(TestKit / packageDoc / artifact, TestKit / packageDoc) ++
+      TestKitPluginCompat.classpathSettings(TestKit) ++
       Seq(
-        Test / dependencyClasspath ++= (TestKit / exportedProducts).value,
         TestKit / sourceDirectory := baseDirectory.value / "src" / classifier,
         TestKit / scalaSource := (TestKit / sourceDirectory).value / "scala",
         TestKit / resourceDirectory := (TestKit / sourceDirectory).value / "resources",
