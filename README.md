@@ -2,8 +2,6 @@
 
 SBT testkit configuration
 
-⚠️ SBT 1.8.0 or newer is required.
-
 ## Usage
 
 ### plugins.sbt
