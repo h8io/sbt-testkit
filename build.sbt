@@ -1,7 +1,8 @@
-ThisBuild / dynverSonatypeSnapshots := true
-ThisBuild / dynverSeparator := "-"
+dynverSonatypeSnapshots := true
+dynverSeparator := "-"
 
-val plugin = project
+val plugin = projectMatrix.in(file("plugin"))
+  .jvmPlatform(scalaVersions = Seq("3.8.4", "2.12.21"))
   .enablePlugins(SbtPlugin, ScoverageSummaryPlugin)
   .settings(
     name := "sbt-testkit",
@@ -12,8 +13,6 @@ val plugin = project
     licenses := List("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
     homepage := Some(url("https://github.com/h8io/sbt-testkit")),
     versionScheme := Some("semver-spec"),
-    scalaVersion := "2.12.21",
-    crossScalaVersions := Seq(scalaVersion.value, "3.8.4"),
     javacOptions ++= Seq("--release", "11"),
     developers := List(
       Developer(
@@ -29,8 +28,6 @@ val plugin = project
         "scm:git@github.com:h8io/sbt-testkit.git"
       )
     ),
-    sbtPlugin := true,
-    sbtPluginPublishLegacyMavenStyle := false,
     pluginCrossBuild / sbtVersion := {
       scalaBinaryVersion.value match {
         case "2.12" => "1.8.0"
