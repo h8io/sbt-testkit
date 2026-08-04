@@ -31,7 +31,7 @@ A third configuration next to `Compile` and `Test`:
 
 ```scala
 // project/plugins.sbt
-addSbtPlugin("io.h8.sbt" % "sbt-testkit" % "2.1.1")
+addSbtPlugin("io.h8.sbt" % "sbt-testkit" % "2.2.0")
 ```
 
 ```scala
