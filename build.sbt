@@ -1,6 +1,11 @@
 dynverSonatypeSnapshots := true
 dynverSeparator := "-"
 
+ThisBuild / coverageSummaryStmtLowThreshold := 90
+ThisBuild / coverageSummaryStmtHighThreshold := 95
+ThisBuild / coverageSummaryBranchLowThreshold := 90
+ThisBuild / coverageSummaryBranchHighThreshold := 95
+
 val plugin = projectMatrix.in(file("plugin"))
   .jvmPlatform(scalaVersions = Seq("3.8.4", "2.12.21"))
   .enablePlugins(SbtPlugin, ScoverageSummaryPlugin)
@@ -10,16 +15,17 @@ val plugin = projectMatrix.in(file("plugin"))
     organizationName := "H8IO",
     organizationHomepage := Some(url("https://github.com/h8io/")),
     description := "SBT testkit configuration plugin",
-    licenses := List("Apache 2" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+    licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
     homepage := Some(url("https://github.com/h8io/sbt-testkit")),
     versionScheme := Some("semver-spec"),
     javacOptions ++= Seq("--release", "11"),
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.20" % Test,
     developers := List(
       Developer(
         id = "eshu",
         name = "Pavel",
         email = "tjano.xibalba@gmail.com",
-        url = url("https://github.com/h8io/")
+        url = url("https://github.com/eshu/")
       )
     ),
     scmInfo := Some(
