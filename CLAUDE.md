@@ -38,9 +38,13 @@ decides which sbt API the code compiles against, so almost everything surprising
 
 ## The compat split
 
-`TestKitPluginCompat` exists twice, in `src/main/scala-2.12` and `src/main/scala-3`, under the same fully
+`TestKitPluginCompat` exists twice, in `src/main/scala-sbt-1.0` and `src/main/scala-sbt-2`, under the same fully
 qualified name; sbt adds the version directory for the row being compiled, so each row sees exactly one. The
 shared code in `src/main/scala` calls it without knowing which.
+
+The directories are named on the sbt axis because that is what the divergence is about. sbt also offers
+`scala-2.12` and `scala-3` for the Scala axis, and those stay free for a divergence that is genuinely about the
+language rather than about the build tool.
 
 It is down to a single method, and should stay that way:
 
@@ -61,9 +65,9 @@ Two consequences worth keeping in mind:
   are compiled separately is an invitation to fix one copy and forget the other. Where a type is all that
   differs, leaving it to inference is usually enough: `artifactTasks` needs no annotation and resolves to the
   right type on each row.
-- **The directories are named on the Scala axis while the reason is the sbt axis.** They coincide today
-  (2.12 ↔ sbt 1, 3 ↔ sbt 2). sbt also offers `scala-sbt-1.0` and `scala-sbt-2`, which would name the reason
-  honestly; moving is a rename of two directories and no code.
+- **The suffixes track `sbtBinaryVersion`**, which is `1.0` for every sbt 1.x and `2` for sbt 2.x. A future sbt
+  with a different binary version would need a directory of its own; nothing warns about a directory nobody
+  reads, so the compat file would silently stop being compiled in.
 
 ## Testing
 
