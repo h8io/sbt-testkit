@@ -6,26 +6,34 @@ Test support that ships **with** a library rather than **inside** it.
 
 ## The problem
 
-A module accumulates helpers its tests are built on — generators, fixtures, matchers, base classes. Other modules
-want them, and so, eventually, does anyone writing their own implementation of your abstractions. Neither of the
-usual places works:
+A module accumulates helpers its tests are built on — generators, fixtures, matchers, base classes. They point
+both ways at once: they are written against the module, and the module's own tests are written against them.
+Other modules want them too, and so, eventually, does anyone implementing your abstractions in their own project.
 
-- **`src/main`** puts them in the published artifact, and drags ScalaTest and ScalaCheck onto the compile
+Nothing ordinary holds that shape.
+
+- **`src/main`** publishes the helpers inside the artifact and drags ScalaTest and ScalaCheck onto the compile
   classpath of everyone who depends on you.
-- **`src/test`** with `"test->test"` shares them inside your build and nowhere else, because test classes are not
-  published.
+- **`src/test`** with `"test->test"` gets both directions right and stops at the edge of your build: test classes
+  are not published, so nobody outside can reuse them.
+- **a separate module** can be published, but then it cannot serve the tests of the module it is built on. The two
+  projects would have to depend on each other, and a build like that does not load at all — evaluating either
+  definition requires the other, and sbt dies with a `StackOverflowError` before it reaches your code.
 
-That leaves a whole extra module, with its own name and coordinates, for what is really one module's other half.
+The helpers are not a second project. They are a third part of one.
 
 ## What the plugin adds
 
-A third configuration next to `Compile` and `Test`:
+A third configuration next to `Compile` and `Test`, which is where code of that shape belongs:
 
 - sources in **`src/testkit`**, separate from both
-- it **extends `Compile`**, so the helpers can use the module they belong to
-- its output is on the module's own **`Test`** classpath, so its tests use them directly
+- it **extends `Compile`**, so the helpers are written against the module
+- its output is on the module's own **`Test`** classpath, so the module's tests are written against the helpers
 - it is **published** — under the same coordinates as the main artifact, with the classifiers `testkit`,
   `testkit-sources` and `testkit-javadoc`
+
+The first two are the loop that no arrangement of projects can express. The third is what carries it past your
+own build.
 
 ## Installing
 
@@ -46,6 +54,8 @@ on the published testkit artifact gets them transitively.
 
 ## Using it inside the build
 
+`core`'s own tests need no wiring — the helpers are already on their classpath. Other modules ask:
+
 ```scala
 val lib = (project in file("lib"))
   .dependsOn(core, core % "test->testkit")
@@ -61,7 +71,7 @@ The helpers sit on Maven Central next to the library, so a downstream project as
 libraryDependencies += "io.h8" %% "stages-core" % "0.0.22" % Test classifier "testkit"
 ```
 
-This is the part `"test->test"` cannot do, and the reason the plugin exists.
+Same coordinates as the library, one classifier apart. This is the reach `"test->test"` does not have.
 
 ## Publishing
 
