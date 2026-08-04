@@ -78,11 +78,11 @@ class TestKitPluginTest extends AnyFlatSpec with Matchers {
     settings.lastIndexWhere(s => s.key.key.label == artifact.key.label) should be > defaults
   }
 
-  it should "register all three for publishing outside the configuration" in {
-    // addArtifact contributes to the project-scoped keys on purpose: scoped into TestKit they would describe
-    // artifacts nobody publishes, since publishing reads them from the project scope
+  it should "register them for publishing outside the configuration" in {
+    // Scoped into TestKit these would describe artifacts nobody publishes, since publishing reads them from the
+    // project scope
     val registrations = withLabel(artifacts)(settings) ++ withLabel(packagedArtifacts)(settings)
-    registrations should have size 6
+    registrations should have size 2
     registrations.map(_.key.scope.config).distinct shouldEqual Seq(This)
   }
 
@@ -114,5 +114,14 @@ class TestKitPluginTest extends AnyFlatSpec with Matchers {
 
   it should "be part of what the plugin contributes" in {
     withLabel(dependencyClasspath)(inConfig(Test)(settings)) should have size 1
+  }
+
+  it should "register the artifacts through the project-scoped keys" in {
+    // Not through addArtifact, which registers unconditionally and never reads publishArtifact — that is what left
+    // publishTestKitArtifacts unable to switch anything off
+    val artifactSettings = TestKitPluginCompat.artifactSettings(TestKit)
+    artifactSettings.map(_.key.key.label) should contain theSameElementsAs
+      Seq(artifacts.key.label, packagedArtifacts.key.label)
+    artifactSettings.map(_.key.scope.config).distinct shouldEqual Seq(This)
   }
 }
