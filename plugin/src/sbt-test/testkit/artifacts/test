@@ -1,0 +1,2 @@
+# Publishing carries all three testkit artifacts, each under its own classifier
+> expectTestKitArtifacts
