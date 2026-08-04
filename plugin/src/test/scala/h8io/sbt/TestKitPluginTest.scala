@@ -96,32 +96,18 @@ class TestKitPluginTest extends AnyFlatSpec with Matchers {
     labels(inConfig(TestKit)(settings)) should contain(publishTestKitArtifacts.key.label)
   }
 
-  /** The one place with two implementations — one for sbt 1 on 2.12, one for sbt 2 on 3. They differ in how they extend
-    * the classpath, and this is what they are not allowed to differ on. These run in both rows of the matrix, so a
-    * change to either file has to keep satisfying them.
-    */
-  "TestKitPluginCompat" should "contribute a single classpath setting" in {
-    val compat = TestKitPluginCompat.classpathSettings(TestKit)
-    compat should have size 1
-    compat.head.key.key.label shouldEqual dependencyClasspath.key.label
-  }
-
-  it should "extend the classpath of Test, not the one of the configuration it is given" in {
+  "the classpath" should "be extended for Test, not for the configuration itself" in {
     // The point of the plugin is that test code sees the testkit sources, not the other way round
-    inConfig(Test)(TestKitPluginCompat.classpathSettings(TestKit)) should have size 1
-    inConfig(TestKit)(TestKitPluginCompat.classpathSettings(TestKit)) shouldBe empty
-  }
-
-  it should "be part of what the plugin contributes" in {
     withLabel(dependencyClasspath)(inConfig(Test)(settings)) should have size 1
+    withLabel(dependencyClasspath)(inConfig(TestKit)(settings)).map(_.key.scope.task).distinct shouldEqual Seq(This)
   }
 
-  it should "register the artifacts through the project-scoped keys" in {
-    // Not through addArtifact, which registers unconditionally and never reads publishArtifact — that is what left
-    // publishTestKitArtifacts unable to switch anything off
-    val artifactSettings = TestKitPluginCompat.artifactSettings(TestKit)
-    artifactSettings.map(_.key.key.label) should contain theSameElementsAs
-      Seq(artifacts.key.label, packagedArtifacts.key.label)
-    artifactSettings.map(_.key.scope.config).distinct shouldEqual Seq(This)
+  /** All that is left of the split between sbt 1 and sbt 2. The settings themselves are shared, so the two rows have
+    * nothing to disagree about; what each supplies is a wrapper that must not change the value it is handed. That it
+    * really does not is what the scripted tests establish, by running the same builds in both rows.
+    */
+  "TestKitPluginCompat.uncached" should "hand back what it was given" in {
+    TestKitPluginCompat.uncached(42) shouldEqual 42
+    TestKitPluginCompat.uncached("testkit") shouldEqual "testkit"
   }
 }
