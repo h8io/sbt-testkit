@@ -19,10 +19,8 @@ object TestKitPlugin extends AutoPlugin {
 
   override def projectSettings: Seq[Def.Setting[?]] =
     inConfig(TestKit)(Defaults.configSettings) ++
-      addArtifact(TestKit / packageBin / artifact, TestKit / packageBin) ++
-      addArtifact(TestKit / packageSrc / artifact, TestKit / packageSrc) ++
-      addArtifact(TestKit / packageDoc / artifact, TestKit / packageDoc) ++
       TestKitPluginCompat.classpathSettings(TestKit) ++
+      TestKitPluginCompat.artifactSettings(TestKit) ++
       Seq(
         TestKit / sourceDirectory := baseDirectory.value / "src" / classifier,
         TestKit / scalaSource := (TestKit / sourceDirectory).value / "scala",

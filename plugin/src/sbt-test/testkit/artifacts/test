@@ -1,2 +1,7 @@
 # Publishing carries all three testkit artifacts, each under its own classifier
 > expectTestKitArtifacts
+
+# ...and publishTestKitArtifacts keeps them out of it
+$ copy-file changes/build.sbt build.sbt
+> reload
+> expectNoTestKitArtifacts

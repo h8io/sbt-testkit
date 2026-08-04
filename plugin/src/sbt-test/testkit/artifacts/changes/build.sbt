@@ -12,6 +12,7 @@ val root = (project in file("."))
     name := "artifacts",
     organization := "io.h8.test",
     scalaVersion := "2.13.18",
+    TestKit / publishTestKitArtifacts := false,
     // publishLocalConfiguration rather than packagedArtifacts: what matters is what publishing would upload
     classifiers := publishLocalConfiguration.value.artifacts.map(_._1).flatMap(_.classifier).toSet,
     expectTestKitArtifacts := {
