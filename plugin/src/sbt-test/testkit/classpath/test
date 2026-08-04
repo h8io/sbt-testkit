@@ -1,0 +1,5 @@
+# The testkit sources compile from src/testkit. Slash syntax rather than `testkit:compile`, which sbt 2 removed.
+> Testkit / compile
+
+# ...and the test sources see them on their classpath
+> test

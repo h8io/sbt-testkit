@@ -20,6 +20,16 @@ val plugin = projectMatrix.in(file("plugin"))
     versionScheme := Some("semver-spec"),
     javacOptions ++= Seq("--release", "11"),
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.20" % Test,
+    scriptedLaunchOpts ++= Seq("-Xmx1024M", s"-Dplugin.version=${version.value}"),
+    scriptedBufferLog := false,
+    // The plugin is built for sbt 1.0 binary compatibility, so it runs on any sbt 1.x; scripted may therefore use a
+    // current one instead of the oldest supported. It has to: sbt 1.8.0 brings Scala 2.12.17, which cannot read
+    // Java 21 class files and dies with "bad constant pool index" before the test build is even loaded.
+    scriptedSbt :=
+      (scalaBinaryVersion.value match {
+        case "2.12" => "1.12.14"
+        case _ => (pluginCrossBuild / sbtVersion).value
+      }),
     developers := List(
       Developer(
         id = "eshu",
