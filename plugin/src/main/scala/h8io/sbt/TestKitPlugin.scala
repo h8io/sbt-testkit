@@ -17,11 +17,20 @@ object TestKitPlugin extends AutoPlugin {
 
   override def projectConfigurations: Seq[Configuration] = Seq(TestKit)
 
+  /** Registered through `Classpaths`, not through `addArtifact`: the latter appends unconditionally and never reads
+    * `publishArtifact`, which is what left `publishTestKitArtifacts` unable to switch anything off. These two helpers
+    * are what sbt uses for the artifacts of `Compile`, and they apply the `publishArtifact` of each task's own scope.
+    */
+  private val artifactTasks = Seq(TestKit / packageBin, TestKit / packageSrc, TestKit / packageDoc)
+
   override def projectSettings: Seq[Def.Setting[?]] =
     inConfig(TestKit)(Defaults.configSettings) ++
-      TestKitPluginCompat.classpathSettings(TestKit) ++
-      TestKitPluginCompat.artifactSettings(TestKit) ++
       Seq(
+        Test / dependencyClasspath := TestKitPluginCompat.uncached(
+          (Test / dependencyClasspath).value ++ (TestKit / exportedProducts).value),
+        artifacts ++= Classpaths.artifactDefs(artifactTasks).value,
+        packagedArtifacts := TestKitPluginCompat.uncached(
+          packagedArtifacts.value ++ Classpaths.packaged(artifactTasks).value),
         TestKit / sourceDirectory := baseDirectory.value / "src" / classifier,
         TestKit / scalaSource := (TestKit / sourceDirectory).value / "scala",
         TestKit / resourceDirectory := (TestKit / sourceDirectory).value / "resources",
