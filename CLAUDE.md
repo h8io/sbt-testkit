@@ -101,6 +101,11 @@ Registration goes through `Classpaths.artifactDefs` and `Classpaths.packaged`, n
 appends unconditionally and never reads `publishArtifact`, which is exactly why `publishTestKitArtifacts` did
 nothing for as long as it was used.
 
+## Releasing
+
+The README pins a version in its install snippet and nothing checks it — it was a release behind once already.
+Bump it as part of the release rather than after it.
+
 ## Style
 
 - Warnings are fatal on both rows, including unused imports — an `import sbt.*` left behind after an edit fails
