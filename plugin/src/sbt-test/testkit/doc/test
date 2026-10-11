@@ -1,0 +1,10 @@
+# Whichever configuration is evaluated first, each one names its own scaladoc: sbt 2 caches the defaults that add
+# `-project` under an entry shared by every configuration of the project
+
+# TestKit first, then Compile
+> a/Testkit/expectProject doc-project-a-testkit
+> a/Compile/expectProject doc-project-a
+
+# Compile first, then TestKit
+> b/Compile/expectProject doc-project-b
+> b/Testkit/expectProject doc-project-b-testkit

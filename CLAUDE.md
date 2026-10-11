@@ -82,6 +82,11 @@ in both rows, which is the only place the two `uncached` implementations are act
 - `classpath` — a fixture in `src/testkit` reaching into `Compile`, and a test reaching into the fixture.
 - `artifacts` — the three classifiers on `publishLocalConfiguration`, that is on what publishing would upload
   rather than on what packaging happens to produce, and their absence once `publishTestKitArtifacts` is off.
+- `doc` — the `-project` each configuration's scaladoc is named with on Scala 3, evaluated in both orders. sbt 2
+  caches the defaults that add it, but `configuration` is a transient key and stays out of the cache input, so
+  every configuration of a project shares one entry and the first one evaluated names them all. The plugin
+  therefore defines `TestKit / doc / scalacOptions` itself, uncached; only the order TestKit-then-Compile fails
+  without it. The same collision still exists between `Compile` and `Test`, which is sbt's to fix.
 
 Write `Testkit / compile`, not `testkit:compile`: sbt 2 dropped the colon syntax and takes the configuration's
 **id** where sbt 1 took its **name**. The capitalised form works in both.
