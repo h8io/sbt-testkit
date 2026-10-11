@@ -42,6 +42,17 @@ object TestKitPlugin extends AutoPlugin {
         TestKit / publishTestKitArtifacts := true,
         TestKit / packageBin / publishArtifact := (TestKit / publishTestKitArtifacts).value,
         TestKit / packageSrc / publishArtifact := (TestKit / publishTestKitArtifacts).value,
-        TestKit / packageDoc / publishArtifact := (TestKit / publishTestKitArtifacts).value
+        TestKit / packageDoc / publishArtifact := (TestKit / publishTestKitArtifacts).value,
+        // For Scala 3 the defaults name the scaladoc with `-project`, suffixed with the configuration outside Compile.
+        // sbt 2 caches that, but `configuration` is a transient key and stays out of the cache input, so every
+        // configuration of a project shares one entry and the first evaluated names them all: `Compile` documentation
+        // titled `<name>-testkit`. Built here without caching, TestKit never writes that entry.
+        TestKit / doc / scalacOptions := TestKitPluginCompat.uncached {
+          val project = CrossVersion.partialVersion(scalaVersion.value) match {
+            case Some((3, _)) => Seq("-project", s"${name.value}-${TestKit.name}")
+            case _ => Nil
+          }
+          (TestKit / scalacOptions).value ++ project
+        }
       )
 }

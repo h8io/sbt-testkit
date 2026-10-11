@@ -96,6 +96,14 @@ class TestKitPluginTest extends AnyFlatSpec with Matchers {
     labels(inConfig(TestKit)(settings)) should contain(publishTestKitArtifacts.key.label)
   }
 
+  "the scaladoc options" should "be redefined for the configuration's doc task, after the defaults" in {
+    // The defaults define them too, cached under a key every configuration of the project shares; see the plugin
+    val docOptions = forTask(doc)(withLabel(scalacOptions)(inConfig(TestKit)(settings)))
+    docOptions should not be empty
+    val defaults = settings.lastIndexWhere(_.key.key.label == Keys.compile.key.label)
+    settings.lastIndexOf(docOptions.last) should be > defaults
+  }
+
   "the classpath" should "be extended for Test, not for the configuration itself" in {
     // The point of the plugin is that test code sees the testkit sources, not the other way round
     withLabel(dependencyClasspath)(inConfig(Test)(settings)) should have size 1
