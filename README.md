@@ -83,7 +83,8 @@ TestKit / publishTestKitArtifacts := false
 
 ## sbt versions
 
-Published for both sbt 1.x and sbt 2.x; `addSbtPlugin` resolves the right one.
+Published for both sbt 1.x and sbt 2.x; `addSbtPlugin` resolves the right one. On sbt 2 it needs 2.1.0-RC1 or later:
+the plugin is built with Scala 3.9, whose TASTy the Scala 3.8 that sbt 2.0.x runs on cannot read.
 
 ## License
 
