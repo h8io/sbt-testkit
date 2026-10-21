@@ -67,8 +67,9 @@ class TestKitPluginTest extends AnyFlatSpec with Matchers {
   }
 
   "the packaging" should "give each of the three package tasks an artifact of its own" in {
+    // Not the same elements: the defaults may bring package tasks of their own, as sbt 2.1 does with packageInternal
     val artifactSettings = withLabel(artifact)(settings)
-    artifactSettings.map(_.key.scope.task).distinct should contain theSameElementsAs packageTasks
+    artifactSettings.map(_.key.scope.task).distinct should contain allElementsOf packageTasks
     artifactSettings.map(_.key.scope.config).distinct shouldEqual Seq(Select(ConfigKey(TestKit.name)))
   }
 

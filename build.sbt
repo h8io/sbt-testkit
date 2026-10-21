@@ -47,7 +47,7 @@ val plugin = projectMatrix.in(file("plugin"))
     pluginCrossBuild / sbtVersion := {
       scalaBinaryVersion.value match {
         case "2.12" => "1.8.0"
-        case _ => "2.0.0"
+        case _ => "2.1.0-RC1"
       }
     },
     scalacOptions ++=
