@@ -13,10 +13,10 @@ val plugin = projectMatrix.in(file("plugin"))
     name := "sbt-testkit",
     organization := "io.h8.sbt",
     organizationName := "H8IO",
-    organizationHomepage := Some(url("https://github.com/h8io/")),
+    organizationHomepage := Some(uri("https://github.com/h8io/")),
     description := "SBT testkit configuration plugin",
-    licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt")),
-    homepage := Some(url("https://github.com/h8io/sbt-testkit")),
+    licenses := List("Apache-2.0" -> uri("http://www.apache.org/licenses/LICENSE-2.0.txt")),
+    homepage := Some(uri("https://github.com/h8io/sbt-testkit")),
     versionScheme := Some("semver-spec"),
     javacOptions ++= Seq("--release", "11"),
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.20" % Test,
@@ -35,19 +35,19 @@ val plugin = projectMatrix.in(file("plugin"))
         id = "eshu",
         name = "Pavel",
         email = "tjano.xibalba@gmail.com",
-        url = url("https://github.com/eshu/")
+        url = uri("https://github.com/eshu/")
       )
     ),
     scmInfo := Some(
       ScmInfo(
-        url("https://github.com/h8io/sbt-testkit"),
+        uri("https://github.com/h8io/sbt-testkit"),
         "scm:git@github.com:h8io/sbt-testkit.git"
       )
     ),
     pluginCrossBuild / sbtVersion := {
       scalaBinaryVersion.value match {
         case "2.12" => "1.8.0"
-        case _ => "2.1.0-RC1"
+        case _ => "2.1.0"
       }
     },
     scalacOptions ++=
